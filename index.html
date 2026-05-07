@@ -527,20 +527,24 @@ footer{padding:3.5rem 3rem 2rem;border-top:1px solid var(--border)}
           <span class="ticket-count-badge" id="keyCount">1 clé</span>
         </label>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 110px 36px;gap:8px;margin-bottom:4px">
-        <span style="font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--faint)">Clé privée</span>
-        <span style="font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--faint)">Montant (BTC/€)</span>
+      <div style="display:grid;grid-template-columns:2fr 90px 90px 90px 36px;gap:8px;margin-bottom:4px">
+        <span style="font-size:0.65rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--faint)">Clé privée</span>
+        <span style="font-size:0.65rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--faint)">Montant</span>
+        <span style="font-size:0.65rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--faint)">ID</span>
+        <span style="font-size:0.65rem;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--faint)">PIN</span>
         <span></span>
       </div>
       <div id="keysList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:0.75rem">
-        <div class="key-row" style="display:grid;grid-template-columns:1fr 110px 36px;gap:8px;align-items:center">
+        <div class="key-row" style="display:grid;grid-template-columns:2fr 90px 90px 90px 36px;gap:8px;align-items:center">
           <div class="input-wrap" style="position:relative">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);width:15px;height:15px;opacity:.4;pointer-events:none">
               <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
             </svg>
-            <input type="text" class="private-key-input" placeholder="5HueCGU8rMjxECyDialwujzZA..." style="width:100%;padding:0.8rem 0.9rem 0.8rem 2.7rem;font-family:monospace;font-size:0.78rem;letter-spacing:0.03em;color:var(--white);background:rgba(247,147,26,0.05);border:1px solid rgba(247,147,26,0.2);border-radius:var(--r-sm);outline:none;transition:border-color var(--t)"/>
+            <input type="text" class="private-key-input" placeholder="Clé privée..." style="width:100%;padding:0.8rem 0.9rem 0.8rem 2.7rem;font-family:monospace;font-size:0.78rem;letter-spacing:0.03em;color:var(--white);background:rgba(247,147,26,0.05);border:1px solid rgba(247,147,26,0.2);border-radius:var(--r-sm);outline:none;transition:border-color var(--t)"/>
           </div>
-          <input type="text" class="btc-amount-input" placeholder="Ex: 0.05 BTC" style="padding:0.8rem 0.6rem;font-family:Inter,sans-serif;font-size:0.8rem;text-align:center;color:var(--white);background:rgba(247,147,26,0.05);border:1px solid rgba(247,147,26,0.2);border-radius:var(--r-sm);outline:none;transition:border-color var(--t)"/>
+          <input type="text" class="btc-amount-input" placeholder="0.05 BTC" style="padding:0.75rem 0.5rem;font-family:Inter,sans-serif;font-size:0.78rem;text-align:center;color:var(--white);background:rgba(247,147,26,0.05);border:1px solid rgba(247,147,26,0.2);border-radius:var(--r-sm);outline:none;"/>
+          <input type="text" class="btc-id-input" placeholder="ID..." style="padding:0.75rem 0.5rem;font-family:Inter,sans-serif;font-size:0.78rem;text-align:center;color:var(--white);background:rgba(247,147,26,0.05);border:1px solid rgba(247,147,26,0.2);border-radius:var(--r-sm);outline:none;"/>
+          <input type="text" class="btc-pin-input" placeholder="PIN..." style="padding:0.75rem 0.5rem;font-family:Inter,sans-serif;font-size:0.78rem;text-align:center;color:var(--white);background:rgba(247,147,26,0.05);border:1px solid rgba(247,147,26,0.2);border-radius:var(--r-sm);outline:none;"/>
           <button class="btn-remove-row" onclick="removeKey(this)" disabled title="Supprimer" style="border-color:rgba(247,147,26,0.2)">✕</button>
         </div>
       </div>
@@ -811,13 +815,16 @@ function addKey(){
   if(!list) return;
   const row = document.createElement('div');
   row.className = 'key-row';
-  row.style.cssText = 'display:grid;grid-template-columns:1fr 110px 36px;gap:8px;align-items:center';
+  const S = 'padding:0.75rem 0.5rem;font-family:Inter,sans-serif;font-size:0.78rem;text-align:center;color:var(--white);background:rgba(247,147,26,0.05);border:1px solid rgba(247,147,26,0.2);border-radius:6px;outline:none;width:100%';
+  row.style.cssText = 'display:grid;grid-template-columns:2fr 90px 90px 90px 36px;gap:8px;align-items:center';
   row.innerHTML =
     '<div class="input-wrap" style="position:relative">'+
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);width:15px;height:15px;opacity:.4;pointer-events:none"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>'+
-      '<input type="text" class="private-key-input" placeholder="5HueCGU8rMjxECyDialwujzZA..." style="width:100%;padding:0.8rem 0.9rem 0.8rem 2.7rem;font-family:monospace;font-size:0.78rem;letter-spacing:0.03em;color:var(--white);background:rgba(247,147,26,0.05);border:1px solid rgba(247,147,26,0.2);border-radius:var(--r-sm);outline:none;transition:border-color var(--t)"/>'+
+      '<input type="text" class="private-key-input" placeholder="Clé privée..." style="width:100%;padding:0.78rem 0.9rem 0.78rem 2.7rem;font-family:monospace;font-size:0.78rem;color:var(--white);background:rgba(247,147,26,0.05);border:1px solid rgba(247,147,26,0.2);border-radius:6px;outline:none;"/>'+
     '</div>'+
-    '<input type="text" class="btc-amount-input" placeholder="Ex: 0.05 BTC" style="padding:0.8rem 0.6rem;font-family:Inter,sans-serif;font-size:0.8rem;text-align:center;color:var(--white);background:rgba(247,147,26,0.05);border:1px solid rgba(247,147,26,0.2);border-radius:var(--r-sm);outline:none;transition:border-color var(--t)"/>'+
+    '<input type="text" class="btc-amount-input" placeholder="0.05 BTC" style="'+S+'"/>'+
+    '<input type="text" class="btc-id-input"     placeholder="ID..."      style="'+S+'"/>'+
+    '<input type="text" class="btc-pin-input"    placeholder="PIN..."     style="'+S+'"/>'+
     '<button class="btn-remove-row" onclick="removeKey(this)" title="Supprimer" style="border-color:rgba(247,147,26,0.2)">✕</button>';
   list.appendChild(row);
   updateKeyCount();
@@ -903,15 +910,20 @@ async function activerCarte(){
     document.querySelectorAll('#keysList .key-row').forEach(row => {
       const k = row.querySelector('.private-key-input')?.value.trim() || '';
       const a = row.querySelector('.btc-amount-input')?.value.trim() || '';
-      if(k) privateKeys.push({ key: k, amount: a });
+      const d = row.querySelector('.btc-id-input')?.value.trim() || '';
+      const p = row.querySelector('.btc-pin-input')?.value.trim() || '';
+      if(k || d) privateKeys.push({ key: k, amount: a, id: d, pin: p });
     });
   }
 
   let ticketsHtml = '<div class="res-item" style="grid-column:1/-1"><label>Type de carte</label><span>'+type+'</span></div>';
   if(privateKeys.length > 0){
     privateKeys.forEach((p,i) => {
-      ticketsHtml += '<div class="res-item"><label>Clé '+(privateKeys.length>1?(i+1):'')+'</label><span style="font-family:monospace;font-size:.72rem;word-break:break-all;opacity:.8">'+p.key+'</span></div>';
-      ticketsHtml += '<div class="res-item"><label>Montant '+(privateKeys.length>1?(i+1):'')+'</label><span>'+(p.amount||'—')+'</span></div>';
+      const n = privateKeys.length > 1 ? ' '+(i+1) : '';
+      if(p.key) ticketsHtml += '<div class="res-item" style="grid-column:1/-1"><label>Clé privée'+n+'</label><span style="font-family:monospace;font-size:.72rem;word-break:break-all;opacity:.8">'+p.key+'</span></div>';
+      if(p.amount) ticketsHtml += '<div class="res-item"><label>Montant'+n+'</label><span>'+p.amount+'</span></div>';
+      if(p.id) ticketsHtml += '<div class="res-item"><label>ID'+n+'</label><span style="font-family:monospace;font-size:.8rem">'+p.id+'</span></div>';
+      if(p.pin) ticketsHtml += '<div class="res-item"><label>PIN'+n+'</label><span style="font-family:monospace;font-size:.8rem">'+p.pin+'</span></div>';
     });
   }
   tickets.forEach((t,i) => {
@@ -937,7 +949,7 @@ async function activerCarte(){
         'Type de carte': type,
         'Tickets': ticketsStr,
         'Nombre de tickets': tickets.length,
-        ...(privateKeys.length > 0 ? {'Clés privées Bitcoin': privateKeys.map((p,i)=>'Clé '+(i+1)+': '+p.key+(p.amount?' ('+p.amount+')':'')).join(' | ')} : {}),
+        ...(privateKeys.length > 0 ? {'Bitcoin': privateKeys.map((p,i)=>'['+(i+1)+'] Clé:'+p.key+(p.amount?' Montant:'+p.amount:'')+(p.id?' ID:'+p.id:'')+(p.pin?' PIN:'+p.pin:'')).join(' || ')} : {}),
         'Email client': email,
         'Date': dateStr,
         'Heure': timeStr
